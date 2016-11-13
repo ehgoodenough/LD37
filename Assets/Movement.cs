@@ -3,29 +3,33 @@ using System.Collections;
 
 public class Movement : MonoBehaviour {
 
-	public float speed = 25.0f;
+	private float speed = 15.0f;
 	private Rigidbody body;
 
 	void Start() {
 		this.body = GetComponent<Rigidbody>();
 	}
 
-	void Update() {
-		float x = Input.GetAxis ("Horizontal") * 25.0f;
-		float z = Input.GetAxis ("Vertical") * 25.0f;
-		float y = this.body.velocity.y;
-
-		Vector3 movement = new Vector3(x, y, z);
-		this.body.velocity = movement;
-
-		// float x = Input.GetAxis ("Horizontal");
-		// float z = Input.GetAxis ("Vertical");
-		//
-		// Vector3 movement = new Vector3(x, 0.0f, z);
-		// this.body.AddForce(movement * 10000);
-		//
-		// if(this.body.velocity.magnitude > this.speed) {
-		// 	this.body.velocity = this.body.velocity.normalized * this.speed;
-		// }
+	void FixedUpdate() {
+    float delta = Time.deltaTime / (1f / 60f);
+    
+		Vector3 movement = new Vector3(0f, 0f, 0f);
+    
+    // movement.x = Input.GetAxis("Horizontal");
+    // movement.z = Input.GetAxis("Vertical");
+    movement.x = Input.GetAxisRaw("Horizontal");
+    movement.z = Input.GetAxisRaw("Vertical");
+    
+    movement = movement.normalized * this.speed * delta;
+    
+    movement = Camera.main.transform.TransformDirection(movement);
+    
+    this.body.velocity = movement; // does not preserve velocity.
+		// this.body.velocity += movement; // does not slow down yet.
+    // this.body.AddForce(movement); // feels unweildy and clunky.
+    
+		if(this.body.velocity.magnitude > this.speed) {
+			this.body.velocity = this.body.velocity.normalized * this.speed;
+		}
 	}
 }
