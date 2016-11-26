@@ -21,6 +21,15 @@ public class Game : MonoBehaviour {
 	
 	void Update() {
 	    if(Input.GetButtonDown("Action")) {
+            // TODO:
+            // Check if current block overlaps
+            // the previous block. If it is not
+            // overlapped, the game is over. If it
+            // is, bump the score. Divide the block
+            // into two blocks, one that overlaps and
+            // one that doesn't. Create a new block which
+            // has the dimensions of the overlapping block.
+            
             score += 1;
             blocks.Add(InitializeBlock(score));
         }
@@ -30,9 +39,9 @@ public class Game : MonoBehaviour {
     
     // Instantiates a new block, and initializes
     // it with some parameters of how it should spawn.
-    private GameObject InitializeBlock(int height) {
+    private GameObject InitializeBlock(int stack) {
         GameObject block = Instantiate(BlockPrefab);
-        block.GetComponent<Block>().Initialize(height);
+        block.GetComponent<Block>().Initialize(stack);
         return block;
     }
     
