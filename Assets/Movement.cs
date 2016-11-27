@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
+        
         // Normalize the delta.
         float delta = Time.deltaTime / (1f / 60f);
         
@@ -31,16 +32,6 @@ public class Movement : MonoBehaviour {
         ///////////////
         // Rotation //
         /////////////
-        
-        // Vector3 mousePosition = Input.mousePosition;
-        // mousePosition.z = Camera.main.transform.position.z;
-        // mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        // 
-        // float dx = mousePosition.x - transform.position.x;
-        // float dy = mousePosition.y - transform.position.y;
-        // 
-        // float angle = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
-        // body.rotation = angle;
         
         Vector3 direction = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
         transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, Vector3.forward);
