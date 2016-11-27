@@ -4,35 +4,45 @@ using System.Collections;
 public class Movement : MonoBehaviour {
 
     private float maxSpeed = 10.0f;
-	private Rigidbody body;
+	private Rigidbody2D body;
 
 	void Start() {
-		this.body = GetComponent<Rigidbody>();
+		body = GetComponent<Rigidbody2D>();
 	}
 
 	void FixedUpdate() {
+        // Normalize the delta.
         float delta = Time.deltaTime / (1f / 60f);
         
-		Vector3 movement = new Vector3(0f, 0f, 0f);
+        ///////////////
+        // Position //
+        /////////////
         
-        // movement.x = Input.GetAxis("Horizontal");
-        // movement.z = Input.GetAxis("Vertical");
+		Vector2 movement = new Vector2(0f, 0f);
+        
         movement.x = Input.GetAxisRaw("Horizontal");
-        movement.z = Input.GetAxisRaw("Vertical");
+        movement.y = Input.GetAxisRaw("Vertical");
 
         movement = movement.normalized;
 
-        // movement = Camera.main.transform.TransformDirection(movement);
-
-        //      this.body.velocity = movement; // does not preserve velocity.
-        //// this.body.velocity += movement; // does not slow down yet.
-        //      // this.body.AddForce(movement); // feels unweildy and clunky.
-
-        //if(this.body.velocity.magnitude > this.speed) {
-        //	this.body.velocity = this.body.velocity.normalized * this.speed;
-        //}
-
-        Vector3 targetVelocity = movement * maxSpeed;
-        this.body.velocity += (targetVelocity - this.body.velocity)/4 * delta;
+        Vector2 targetVelocity = movement * maxSpeed;
+        body.velocity += (targetVelocity - body.velocity) / 4 * delta;
+        
+        ///////////////
+        // Rotation //
+        /////////////
+        
+        // Vector3 mousePosition = Input.mousePosition;
+        // mousePosition.z = Camera.main.transform.position.z;
+        // mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        // 
+        // float dx = mousePosition.x - transform.position.x;
+        // float dy = mousePosition.y - transform.position.y;
+        // 
+        // float angle = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
+        // body.rotation = angle;
+        
+        Vector3 direction = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
+        transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, Vector3.forward);
 	}
 }
