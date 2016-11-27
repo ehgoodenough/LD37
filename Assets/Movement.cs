@@ -36,4 +36,8 @@ public class Movement : MonoBehaviour {
         Vector3 direction = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
         transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, Vector3.forward);
 	}
+    
+    void OnTriggerStay2D(Collider2D other) {
+        other.GetComponent<Renderer>().material.color = Color.red;
+    }
 }
