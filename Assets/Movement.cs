@@ -19,7 +19,7 @@ public class Movement : MonoBehaviour {
         // Position //
         /////////////
         
-		Vector2 movement = new Vector2(0f, 0f);
+        Vector2 movement = new Vector2(0f, 0f);
         
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
