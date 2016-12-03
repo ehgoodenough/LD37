@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Movement : MonoBehaviour {
+public class PlayerManager : MonoBehaviour {
 
     private float maxSpeed = 10.0f;
 	private Rigidbody2D body;
