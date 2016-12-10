@@ -33,7 +33,7 @@ public class PlayerManager : MonoBehaviour {
         }
 
         // If the player has hit the pickup key...
-        if(Input.GetKey("s") || Input.GetKey("down")) {
+        if(Input.GetKeyDown("s") || Input.GetKeyDown("down")) {
             // ...And if the player isn't yet holding anything.
             if(held == null) {
                 // ...And if the player is standing on something.
@@ -46,13 +46,14 @@ public class PlayerManager : MonoBehaviour {
                     hit.transform.parent = transform;
                     hit.transform.localPosition = new Vector2(0, 3);
 
-                    held = hit.gameObject;
+                    held = hit.collider.gameObject;
                 }
             } else {
+                held.GetComponent<Rigidbody2D>().isKinematic = false;
+                held.GetComponent<Collider2D>().enabled = true;
+
                 held.transform.parent = null;
-                held.rigidbody.isKinematic = true;
-                held.collider.enabled = false;
-                
+
                 held = null;
             }
         }
