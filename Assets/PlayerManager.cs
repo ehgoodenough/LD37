@@ -50,7 +50,7 @@ public class PlayerManager : MonoBehaviour {
                 }
             } else {
                 held.GetComponent<Collider2D>().enabled = true;
-                held.GetComponent<Rigidbody2D>().isKinematic = (held.name == "RockBlock (0)");
+                held.GetComponent<Rigidbody2D>().isKinematic = (held.tag == "Rock");
 
                 held.transform.localPosition = new Vector2(0f, 0f);
                 held.transform.parent = null;
