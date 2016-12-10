@@ -59,6 +59,11 @@ public class PlayerManager : MonoBehaviour {
                 held = null;
             }
         }
+
+        if(Physics2D.Raycast(transform.position, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
+            //Vector3 targetPosition = new Vector3(0f, , -14.3f);
+            Camera.main.transform.Translate(0f, (transform.position.y - Camera.main.transform.position.y) / 8f, 0f);
+        }
 	}
 
     void OnTriggerEnter2D(Collider2D collider) {
