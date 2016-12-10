@@ -49,9 +49,10 @@ public class PlayerManager : MonoBehaviour {
                     held = hit.collider.gameObject;
                 }
             } else {
-                held.GetComponent<Rigidbody2D>().isKinematic = false;
                 held.GetComponent<Collider2D>().enabled = true;
+                held.GetComponent<Rigidbody2D>().isKinematic = (held.name == "RockBlock (0)");
 
+                held.transform.localPosition = new Vector2(0f, 0f);
                 held.transform.parent = null;
 
                 held = null;
