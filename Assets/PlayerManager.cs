@@ -51,6 +51,9 @@ public class PlayerManager : MonoBehaviour {
 
                     hit.transform.parent = transform;
                     hit.transform.localPosition = new Vector2(0, 3);
+                    hit.rigidbody.velocity = Vector2.zero;
+                    hit.rigidbody.angularVelocity = 0;
+                    hit.transform.rotation = Quaternion.identity;
 
                     held = hit.collider.gameObject;
                 }
