@@ -29,12 +29,11 @@ public class PlayerManager : MonoBehaviour {
         // If player has hit the jump key...
         if(Input.GetKey("w") || Input.GetKey("up")) {
             // ...And if the player is standing on the ground...
-            if(Physics2D.Raycast(transform.position, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
-                if(body.velocity.y <= 0)
-                {
+            if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
+                if(body.velocity.y <= 0) {
                     // ...Then jump!
                     body.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
-                }                
+                }
             }
         }
 
