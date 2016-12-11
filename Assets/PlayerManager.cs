@@ -34,14 +34,18 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        // If the player has hit the pickup key...
-        if(Input.GetKeyDown("s") || Input.GetKeyDown("down")) {
-            // ...And if the player isn't yet holding anything.
+        if(Input.GetKeyDown("space")) {
             if(held == null) {
-                // ...And if the player is standing on something.
-                RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Dirt"));
+                Vector2 direction = Vector2.down;
+                if(Input.GetKey("a") || Input.GetKey("left")) {
+                    direction = Vector2.left;
+                } if(Input.GetKey("d") || Input.GetKey("right")) {
+                    direction = Vector2.right;
+                }
+                Vector2 position = transform.position;
+                position.y += 0.5f; // maybe just move the anchor of the player to the halfway point instead of re-calculating it here?
+                RaycastHit2D hit = Physics2D.CircleCast(position, 0.25f, direction, 0.5f, LayerMask.GetMask("Dirt"));
                 if(hit.collider != null && hit.collider.gameObject.name != "Ground") {
-                    // ...Then pick it up!
                     hit.rigidbody.isKinematic = true;
                     hit.collider.enabled = false;
 
