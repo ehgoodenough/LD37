@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour {
     public float throwSpeed = 15f;
 
     private const float NEGLIBILE_DISTANCE = 0.01f;
+    private const float CAMERA_OFFCENTER = 3f;
 
     private GameObject held;
 
@@ -102,35 +103,9 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        if(Physics2D.CircleCast(transform.position, 0.5f, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
-            Camera.main.transform.Translate(0f, (transform.position.y - Camera.main.transform.position.y) / 8f, 0f);
+        if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
+            Camera.main.transform.Translate(0f, ((transform.position.y + CAMERA_OFFCENTER) - Camera.main.transform.position.y) / 8f, 0f);
         }
-
-        // if(Physics2D.Raycast(transform.position, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
-        //     if(Mathf.Abs(transform.position.y - Camera.main.transform.position.y) < NEGLIBILE_DISTANCE) {
-        //         Vector3 targetPosition = Camera.main.transform.position;
-        //
-        //         // targetPosition.y = transform.position.y;
-        //         // Camera.main.transform.position = targetPosition.y;
-        //     } else {
-        //         Camera.main.transform.Translate(0f, (transform.position.y - Camera.main.transform.position.y) / 0.125f, 0f);
-        //     }
-        // }
-
-        // if(Physics2D.Raycast(transform.position, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
-        //     float targetY = transform.position.y;
-        //     float yPosDifference = targetY - Camera.main.transform.position.y;
-        //     if(yPosDifference > 0){
-        //         int moveDirection = 1f;
-        //     } else{
-        //         int moveDirection = -1f;
-        //     }
-        //     float translateAmount = (yPosDifference)/8.0f;
-        //     if(translateAmount > yPosDifference){
-        //         translateAmount = yPosDifference;
-        //     Camera.main.transform.Translate(0f, translateAmount, 0f);
-        // }
-
 	}
 
     void setNewHighlightedBlock(GameObject newBlock)
@@ -156,9 +131,5 @@ public class PlayerManager : MonoBehaviour {
             }
             highlightedBlock = null;
         }
-    }
-
-    void OnTriggerEnter2D(Collider2D collider) {
-        // ...?!
     }
 }
