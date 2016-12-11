@@ -93,8 +93,4 @@ public class PlayerManager : MonoBehaviour {
             Camera.main.transform.Translate(0f, ((transform.position.y + CAMERA_OFFCENTER) - Camera.main.transform.position.y) / 8f, 0f);
         }
 	}
-
-    void OnTriggerEnter2D(Collider2D collider) {
-        // ...?!
-    }
 }
