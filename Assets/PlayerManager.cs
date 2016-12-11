@@ -2,8 +2,11 @@
 using System.Collections;
 
 public class PlayerManager : MonoBehaviour {
+    private const float GRABDISTANCE = 2f;
 
     private Rigidbody2D body;
+    private Vector2 cursorDirection;
+    private GameObject highlightedBlock;
 
     public float jumpSpeed = 20f;
     public float moveSpeed = 10f;
@@ -15,6 +18,7 @@ public class PlayerManager : MonoBehaviour {
 
     void Start() {
         body = GetComponent<Rigidbody2D>();
+        cursorDirection = Vector2.down;
     }
 
 	void Update() {
@@ -37,33 +41,43 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        if(Input.GetKeyDown("space") || Input.GetKeyDown("s") || Input.GetKeyDown("down")) {
-            if(held == null) {
-                Vector2 direction = Vector2.down;
-                if(Input.GetKey("a") || Input.GetKey("left")) {
-                    direction = Vector2.left;
-                } if(Input.GetKey("d") || Input.GetKey("right")) {
-                    direction = Vector2.right;
-                } if(Input.GetKey("w") || Input.GetKey("up")){
-                    direction = Vector2.up;
+        Vector3 worldMouseLocation = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1));
+        worldMouseLocation.z = 0;
+        cursorDirection = new Vector2(worldMouseLocation.x - transform.position.x, worldMouseLocation.y - (transform.position.y + transform.localScale.y / 2));
+
+        if(held == null)
+        {
+            RaycastHit2D sampleHit = Physics2D.Raycast(transform.position + new Vector3(0, transform.localScale.y/2, 0), cursorDirection, GRABDISTANCE, LayerMask.GetMask("Dirt"));
+            if (sampleHit)
+            {
+                if (sampleHit.collider.gameObject.tag == "Rock" || sampleHit.collider.gameObject.tag == "Dirt")
+                {
+                    setNewHighlightedBlock(sampleHit.collider.gameObject);
                 }
-                Vector2 position = transform.position;
-                position.y += 1f; // maybe just move the anchor of the player to the halfway point instead of re-calculating it here?
-                RaycastHit2D hit = Physics2D.CircleCast(position, 0.4f, direction, 1f, LayerMask.GetMask("Dirt"));
-                if(hit.collider != null && hit.collider.gameObject.name != "Ground") {
-                    hit.rigidbody.isKinematic = true;
-                    hit.collider.enabled = false;
+            }
+            else
+            {
+                unsetHighlightedBlock();
+            }
+        }
 
-                    hit.transform.parent = transform;
-                    hit.transform.localPosition = new Vector2(0, 3);
-                    hit.rigidbody.velocity = Vector2.zero;
-                    hit.rigidbody.angularVelocity = 0;
-                    hit.transform.rotation = Quaternion.identity;
+        if (Input.GetKeyDown("space") || Input.GetKeyDown("s") || Input.GetKeyDown("down")) {
+            if(held == null) {
+                if(highlightedBlock != null && highlightedBlock.name != "Ground") {
+                    highlightedBlock.GetComponent<Rigidbody2D>().isKinematic = true;
+                    highlightedBlock.GetComponent<BoxCollider2D>().enabled = false;
 
-                    held = hit.collider.gameObject;
+                    highlightedBlock.transform.parent = transform;
+                    highlightedBlock.transform.localPosition = new Vector2(0, 3);
+                    highlightedBlock.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                    highlightedBlock.GetComponent<Rigidbody2D>().angularVelocity = 0f;
+                    highlightedBlock.transform.rotation = Quaternion.identity;
+
+                    held = highlightedBlock;
+                    //unsetHighlightedBlock();
                 }
             } else {
-                held.GetComponent<Collider2D>().enabled = true;
+                held.GetComponent<BoxCollider2D>().enabled = true;
                 held.GetComponent<Rigidbody2D>().isKinematic = (held.tag == "Rock");
 
                 held.transform.parent = null;
@@ -118,6 +132,31 @@ public class PlayerManager : MonoBehaviour {
         // }
 
 	}
+
+    void setNewHighlightedBlock(GameObject newBlock)
+    {
+        if (highlightedBlock != null)
+        {
+            unsetHighlightedBlock();
+        }
+        highlightedBlock = newBlock;
+        highlightedBlock.GetComponent<SpriteRenderer>().color = new Color(.4f, .6f, .4f, 1);
+    }
+
+    void unsetHighlightedBlock()
+    {
+        if(highlightedBlock != null)
+        {
+            if(highlightedBlock.tag == "Rock")
+            {
+                highlightedBlock.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 1);
+            } else if(highlightedBlock.tag == "Dirt")
+            {
+                highlightedBlock.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+            }
+            highlightedBlock = null;
+        }
+    }
 
     void OnTriggerEnter2D(Collider2D collider) {
         // ...?!
