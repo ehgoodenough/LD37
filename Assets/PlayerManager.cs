@@ -43,8 +43,8 @@ public class PlayerManager : MonoBehaviour {
                     direction = Vector2.right;
                 }
                 Vector2 position = transform.position;
-                position.y += 0.5f; // maybe just move the anchor of the player to the halfway point instead of re-calculating it here?
-                RaycastHit2D hit = Physics2D.CircleCast(position, 0.25f, direction, 0.5f, LayerMask.GetMask("Dirt"));
+                position.y += 1f; // maybe just move the anchor of the player to the halfway point instead of re-calculating it here?
+                RaycastHit2D hit = Physics2D.CircleCast(position, 0.25f, direction, 1f, LayerMask.GetMask("Dirt"));
                 if(hit.collider != null && hit.collider.gameObject.name != "Ground") {
                     hit.rigidbody.isKinematic = true;
                     hit.collider.enabled = false;
