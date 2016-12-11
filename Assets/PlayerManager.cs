@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour {
 
     public float jumpSpeed = 20f;
     public float moveSpeed = 10f;
+    public float throwSpeed = 15f;
 
     private const float NEGLIBILE_DISTANCE = 0.01f;
 
@@ -16,7 +17,7 @@ public class PlayerManager : MonoBehaviour {
         body = GetComponent<Rigidbody2D>();
     }
 
-	void FixedUpdate() {
+	void Update() {
         // Normalize the delta;
         float delta = Time.deltaTime / (1f / 60f);
 
@@ -34,7 +35,7 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        if(Input.GetKeyDown("space")) {
+        if(Input.GetKeyDown("space") || Input.GetKeyDown("s") || Input.GetKeyDown("down")) {
             if(held == null) {
                 Vector2 direction = Vector2.down;
                 if(Input.GetKey("a") || Input.GetKey("left")) {
@@ -44,7 +45,7 @@ public class PlayerManager : MonoBehaviour {
                 }
                 Vector2 position = transform.position;
                 position.y += 1f; // maybe just move the anchor of the player to the halfway point instead of re-calculating it here?
-                RaycastHit2D hit = Physics2D.CircleCast(position, 0.25f, direction, 1f, LayerMask.GetMask("Dirt"));
+                RaycastHit2D hit = Physics2D.CircleCast(position, 0.4f, direction, 1f, LayerMask.GetMask("Dirt"));
                 if(hit.collider != null && hit.collider.gameObject.name != "Ground") {
                     hit.rigidbody.isKinematic = true;
                     hit.collider.enabled = false;
@@ -60,11 +61,24 @@ public class PlayerManager : MonoBehaviour {
             } else {
                 held.GetComponent<Collider2D>().enabled = true;
                 held.GetComponent<Rigidbody2D>().isKinematic = (held.tag == "Rock");
-                // held.GetComponent<Rigidbody2D>().isKinematic = false;
 
-                //transform.Translate(new Vector2(0f, 0.5f));                
                 held.transform.parent = null;
-                held.transform.position = new Vector3((Mathf.Round(held.transform.position.x)), (Mathf.Round(held.transform.position.y)), 0f);
+
+                if(held.tag == "Rock") {
+                    // transform.Translate(new Vector2(0f, 0.5f));
+                    // held.transform.localPosition = new Vector2(0f, 0f);
+
+                    held.transform.position = new Vector3((Mathf.Round(held.transform.position.x)), (Mathf.Round(held.transform.position.y)), 0f);
+                } else {
+                    if((Input.GetKey("a") || Input.GetKey("left"))) {
+                        held.GetComponent<Rigidbody2D>().velocity = new Vector2(-throwSpeed, 5f);
+                    } else if((Input.GetKey("d") || Input.GetKey("right"))) {
+                        held.GetComponent<Rigidbody2D>().velocity = new Vector2(+throwSpeed, 5f);
+                    } else {
+                        held.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, throwSpeed);
+                    }
+                }
+
 
                 held = null;
             }
