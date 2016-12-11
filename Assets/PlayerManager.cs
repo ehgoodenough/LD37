@@ -62,9 +62,9 @@ public class PlayerManager : MonoBehaviour {
                 held.GetComponent<Rigidbody2D>().isKinematic = (held.tag == "Rock");
                 // held.GetComponent<Rigidbody2D>().isKinematic = false;
 
-                transform.Translate(new Vector2(0f, 0.5f));
-                held.transform.localPosition = new Vector2(0f, 0f);
+                //transform.Translate(new Vector2(0f, 0.5f));                
                 held.transform.parent = null;
+                held.transform.position = new Vector3((Mathf.Round(held.transform.position.x)), (Mathf.Round(held.transform.position.y)), 0f);
 
                 held = null;
             }
