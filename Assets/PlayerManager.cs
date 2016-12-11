@@ -8,6 +8,8 @@ public class PlayerManager : MonoBehaviour {
     public float jumpSpeed = 20f;
     public float moveSpeed = 10f;
 
+    private const float NEGLIBILE_DISTANCE = 0.01f;
+
     private GameObject held;
 
     void Start() {
@@ -37,7 +39,7 @@ public class PlayerManager : MonoBehaviour {
             // ...And if the player isn't yet holding anything.
             if(held == null) {
                 // ...And if the player is standing on something.
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.25f, LayerMask.GetMask("Dirt"));
+                RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Dirt"));
                 if(hit.collider != null && hit.collider.gameObject.name != "Ground") {
                     // ...Then pick it up!
                     hit.rigidbody.isKinematic = true;
@@ -51,8 +53,9 @@ public class PlayerManager : MonoBehaviour {
             } else {
                 held.GetComponent<Collider2D>().enabled = true;
                 held.GetComponent<Rigidbody2D>().isKinematic = (held.tag == "Rock");
+                // held.GetComponent<Rigidbody2D>().isKinematic = false;
 
-                held.transform.Translate(new Vector2(0f, 10f));
+                transform.Translate(new Vector2(0f, 0.5f));
                 held.transform.localPosition = new Vector2(0f, 0f);
                 held.transform.parent = null;
 
@@ -60,10 +63,35 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        if(Physics2D.Raycast(transform.position, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
-            //Vector3 targetPosition = new Vector3(0f, , -14.3f);
+        if(Physics2D.CircleCast(transform.position, 0.5f, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
             Camera.main.transform.Translate(0f, (transform.position.y - Camera.main.transform.position.y) / 8f, 0f);
         }
+
+        // if(Physics2D.Raycast(transform.position, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
+        //     if(Mathf.Abs(transform.position.y - Camera.main.transform.position.y) < NEGLIBILE_DISTANCE) {
+        //         Vector3 targetPosition = Camera.main.transform.position;
+        //
+        //         // targetPosition.y = transform.position.y;
+        //         // Camera.main.transform.position = targetPosition.y;
+        //     } else {
+        //         Camera.main.transform.Translate(0f, (transform.position.y - Camera.main.transform.position.y) / 0.125f, 0f);
+        //     }
+        // }
+
+        // if(Physics2D.Raycast(transform.position, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
+        //     float targetY = transform.position.y;
+        //     float yPosDifference = targetY - Camera.main.transform.position.y;
+        //     if(yPosDifference > 0){
+        //         int moveDirection = 1f;
+        //     } else{
+        //         int moveDirection = -1f;
+        //     }
+        //     float translateAmount = (yPosDifference)/8.0f;
+        //     if(translateAmount > yPosDifference){
+        //         translateAmount = yPosDifference;
+        //     Camera.main.transform.Translate(0f, translateAmount, 0f);
+        // }
+
 	}
 
     void OnTriggerEnter2D(Collider2D collider) {
