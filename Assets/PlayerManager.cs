@@ -45,6 +45,8 @@ public class PlayerManager : MonoBehaviour {
                     direction = Vector2.left;
                 } if(Input.GetKey("d") || Input.GetKey("right")) {
                     direction = Vector2.right;
+                } if(Input.GetKey("w") || Input.GetKey("up")){
+                    direction = Vector2.up;
                 }
                 Vector2 position = transform.position;
                 position.y += 1f; // maybe just move the anchor of the player to the halfway point instead of re-calculating it here?
