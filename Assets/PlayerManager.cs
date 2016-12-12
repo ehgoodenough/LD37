@@ -62,8 +62,7 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        if (Input.GetMouseButton(0) || Input.GetKeyDown("space")) {
-            Debug.Log("doinit");
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) {
             if(held == null) {
                 if(highlightedBlock != null && highlightedBlock.name != "Ground") {
                     highlightedBlock.GetComponent<Rigidbody2D>().isKinematic = true;
