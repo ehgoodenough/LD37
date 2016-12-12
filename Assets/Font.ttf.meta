@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: f0cf1a0b9319f4089b93eab73446a1fd
+timeCreated: 1481500835
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Extrude
+  fontNames:
+  - Extrude
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

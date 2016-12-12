@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PlayerManager : MonoBehaviour {
@@ -14,6 +15,7 @@ public class PlayerManager : MonoBehaviour {
 
     private const float NEGLIBILE_DISTANCE = 0.01f;
     private const float CAMERA_OFFCENTER = 3f;
+    private const float WIN_HEIGHT = 40f;
 
     private GameObject held;
 
@@ -105,6 +107,13 @@ public class PlayerManager : MonoBehaviour {
 
         if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
             Camera.main.transform.Translate(0f, ((transform.position.y + CAMERA_OFFCENTER) - Camera.main.transform.position.y) / 8f, 0f);
+        }
+
+        if(transform.position.y > WIN_HEIGHT) {
+            GameObject message = GameObject.Find("Message");
+            if(message != null) {
+                message.GetComponent<Text>().text = "You Win!!";
+            }
         }
 	}
 
