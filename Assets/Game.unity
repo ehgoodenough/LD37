@@ -154,7 +154,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &141761326
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1340,7 +1340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DialogueStrings:
-  - 'Hey, Believe me pal, You got NO CHANCE in getting outta this joint.  '
+  - 'Hey, Believe me pal, You got NO CHANCE of getting outta this joint.  '
   - You can take that to the bank.
   TimeBetweenCharacters: 0.05
   CharacterRate: 0.5
