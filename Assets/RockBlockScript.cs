@@ -18,13 +18,13 @@ public class RockBlockScript : MonoBehaviour {
 		
 	}
 
-    void OnMouseOver()
-    {
-        playerScript.tryToHighlight(this.gameObject);
-    }
+    //void OnMouseOver()
+    //{
+    //    playerScript.tryToHighlight(this.gameObject);
+    //}
 
-    private void OnMouseExit()
-    {
-        playerScript.unsetHighlightedBlock();
-    }
+    //private void OnMouseExit()
+    //{
+    //    playerScript.unsetHighlightedBlock();
+    //}
 }

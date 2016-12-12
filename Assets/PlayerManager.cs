@@ -3,17 +3,18 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class PlayerManager : MonoBehaviour {
-    private const float GRABDISTANCE = 2f;
+    private const float GRABDISTANCE = 3f;
 
     private Rigidbody2D body;
     private Vector2 cursorDirection;
     private GameObject highlightedBlock;
     public GameObject BlockCursorPrefab;
     private GameObject blockCursor;
+    Vector2 playerCenter;
 
     public float jumpSpeed = 20f;
-    public float moveSpeed = 10f;
-    public float throwSpeed = 20f;
+    public float moveSpeed = 15f;
+    public float throwSpeed = 200f;
 
     private const float NEGLIBILE_DISTANCE = 0.01f;
     private const float CAMERA_OFFCENTER = 3f;
@@ -47,6 +48,8 @@ public class PlayerManager : MonoBehaviour {
 	void Update() {
         // Normalize the delta;
         float delta = Time.deltaTime / (1f / 60f);
+
+        playerCenter = new Vector2(transform.position.x, transform.position.y + transform.localScale.y);
 
         // If the player hasn't yet hit the ground
         // from being thrown into the prison...
@@ -87,15 +90,15 @@ public class PlayerManager : MonoBehaviour {
 
         Vector3 worldMouseLocation = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1));
         worldMouseLocation.z = 0;
-        cursorDirection = new Vector2(worldMouseLocation.x - transform.position.x, worldMouseLocation.y - (transform.position.y + transform.localScale.y / 2));
+        cursorDirection = new Vector2(Mathf.Round(worldMouseLocation.x) - transform.position.x, Mathf.Round(worldMouseLocation.y) - (playerCenter.y));
 
-        if(held == null)
+        if (held != null)
         {
-
-        }
-        else
-        {
-            held.transform.Translate(new Vector3(cursorDirection.normalized.x*2f, cursorDirection.normalized.y*2f, 0) + (transform.position - held.transform.position + new Vector3(0, transform.localScale.y, 0)));
+            if (new Vector2(cursorDirection.x, cursorDirection.y).magnitude > 2f)
+            {
+                cursorDirection = cursorDirection.normalized * 2f;
+            }
+            held.transform.Translate(new Vector3(cursorDirection.x, cursorDirection.y, 0) + (transform.position - held.transform.position + new Vector3(0, transform.localScale.y, 0)));
             Vector3 cursorTargetPos = new Vector3(Mathf.Round(held.transform.position.x), (Mathf.Round(held.transform.position.y)), 0.00001f);
             blockCursor.transform.position += (cursorTargetPos - blockCursor.transform.position) / 2;
         }
@@ -107,15 +110,16 @@ public class PlayerManager : MonoBehaviour {
                     highlightedBlock.GetComponent<BoxCollider2D>().enabled = false;
 
                     highlightedBlock.transform.parent = transform;
-                    highlightedBlock.transform.localPosition = new Vector2(0, 3);
                     highlightedBlock.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                     highlightedBlock.GetComponent<Rigidbody2D>().angularVelocity = 0f;
                     highlightedBlock.transform.rotation = Quaternion.identity;
 
                     held = highlightedBlock;
                     blockCursor.SetActive(true);
+                    blockCursor.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                    blockCursor.transform.position = highlightedBlock.transform.position;
                     held.GetComponent<SpriteRenderer>().enabled = false;                   
-                    //unsetHighlightedBlock();
+                    unsetHighlightedBlock();
                 }
             } else {
                 held.GetComponent<BoxCollider2D>().enabled = true;
@@ -130,7 +134,8 @@ public class PlayerManager : MonoBehaviour {
 
                     held.transform.position = new Vector3((blockCursor.transform.position.x), (Mathf.Round(blockCursor.transform.position.y)), 0f);
                 } else {
-                    held.GetComponent<Rigidbody2D>().AddForce(new Vector2(cursorDirection.x, cursorDirection.y)*throwSpeed);
+                    held.transform.position = new Vector3((blockCursor.transform.position.x), (Mathf.Round(blockCursor.transform.position.y)), 0f);
+                    //held.GetComponent<Rigidbody2D>().AddForce(new Vector2(cursorDirection.x, cursorDirection.y)*throwSpeed);
                 }
 
 
@@ -152,8 +157,8 @@ public class PlayerManager : MonoBehaviour {
 
         if(highlightedBlock != null)
         {
-            Vector2 distVector = new Vector2(Mathf.Abs(highlightedBlock.transform.position.x - transform.position.x), Mathf.Abs(highlightedBlock.transform.position.y - (transform.position.y + transform.localScale.y / 2f)));
-            if (distVector.magnitude > 2f)
+            Vector2 distVector = new Vector2(highlightedBlock.transform.position.x - Mathf.Round(transform.position.x), highlightedBlock.transform.position.y - Mathf.Round(playerCenter.y));
+            if (distVector.magnitude > 3f)
             {
                 unsetHighlightedBlock();
             }
@@ -167,7 +172,7 @@ public class PlayerManager : MonoBehaviour {
             unsetHighlightedBlock();
         }
         highlightedBlock = newBlock;
-        highlightedBlock.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
+        highlightedBlock.GetComponent<SpriteRenderer>().color = new Color(.2f, .4f, .8f, 1f);
     }
 
     public void unsetHighlightedBlock()
@@ -187,8 +192,8 @@ public class PlayerManager : MonoBehaviour {
 
     public void tryToHighlight(GameObject block)
     {
-        Vector2 distVector = new Vector2(Mathf.Abs(block.transform.position.x - transform.position.x), Mathf.Abs(block.transform.position.y - (transform.position.y + transform.localScale.y/2f)));
-        if(distVector.magnitude < 2f && held == null)
+        Vector2 distVector = new Vector2(block.transform.position.x - Mathf.Round(transform.position.x), block.transform.position.y - Mathf.Round(playerCenter.y));
+        if(distVector.magnitude <= 3f && held == null)
         {
             setNewHighlightedBlock(block);
         }

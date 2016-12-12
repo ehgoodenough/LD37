@@ -24,4 +24,9 @@ public class DirtBlockScript : MonoBehaviour {
     {
         playerScript.tryToHighlight(this.gameObject);
     }
+
+    void OnMouseExit()
+    {
+        playerScript.unsetHighlightedBlock();
+    }
 }

@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour {
 	void Start() {
 		for(var x = -15f; x <= +15f; x += 1f) {
 			for(var y = -1f; y >= -9f; y -= 1f) {
-				GameObject block = Instantiate(Random.value < 0.5 ? RockBlock : DirtBlock);
+				GameObject block = Instantiate(Random.value < 0.4 ? RockBlock : DirtBlock);
 				block.transform.position = new Vector2(x, y);
 			}
 		}
