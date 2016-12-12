@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 212761196671457908}
   - component: {fileID: 61230893566789338}
   - component: {fileID: 50741800473025244}
+  - component: {fileID: 114789353985037916}
   m_Layer: 9
   m_Name: Dirt Block
   m_TagString: Dirt
@@ -76,6 +77,18 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
+--- !u!114 &114789353985037916
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1008389945568068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15e677701bb85ec47b59270a08879a5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 0}
 --- !u!212 &212761196671457908
 SpriteRenderer:
   m_ObjectHideFlags: 1

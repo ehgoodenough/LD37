@@ -21,16 +21,53 @@ public class PlayerManager : MonoBehaviour {
 
     private GameObject held;
 
+    private bool hasHitGround = false;
+
     void Start() {
         body = GetComponent<Rigidbody2D>();
         cursorDirection = Vector2.down;
+
         blockCursor = GameObject.Instantiate(BlockCursorPrefab, new Vector3(0, 0, 0), Quaternion.identity);
         blockCursor.SetActive(false);
+
+        // If you're sick and tired of
+        // the opening cutscene where
+        // the player is thrown into
+        // the prison, uncomment this.
+        // if(Debug.isDebugBuild) {
+        //     return;
+        // }
+
+        body.freezeRotation = false;
+        transform.position = new Vector2(10f, 50f);
+        body.AddForce(new Vector2(-15f, -15f), ForceMode2D.Impulse);
+        body.AddTorque(-2f, ForceMode2D.Impulse);
     }
 
 	void Update() {
         // Normalize the delta;
         float delta = Time.deltaTime / (1f / 60f);
+
+        // If the player hasn't yet hit the ground
+        // from being thrown into the prison...
+        if(!hasHitGround) {
+            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z);
+
+            if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Block")).collider != null) {
+                if(Input.anyKeyDown) {
+                    transform.rotation = Quaternion.identity;
+                    body.freezeRotation = true;
+                    hasHitGround = true;
+                }
+            }
+
+            // This will pre-maturely exit this method, so
+            // none of the actual game logic will be run
+            // during the opening cutscene where the player
+            // is being thrown into the prison.
+            return;
+        }
+
 
         Vector2 targetVelocity = body.velocity;
         targetVelocity.x = Input.GetAxisRaw("Horizontal") * moveSpeed;
@@ -40,7 +77,7 @@ public class PlayerManager : MonoBehaviour {
         // If player has hit the jump key...
         if(Input.GetKey("w") || Input.GetKey("up")) {
             // ...And if the player is standing on the ground...
-            if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
+            if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Block")).collider != null) {
                 if(body.velocity.y <= 0) {
                     // ...Then jump!
                     body.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
@@ -54,20 +91,7 @@ public class PlayerManager : MonoBehaviour {
 
         if(held == null)
         {
-            //Physics2D.Raycast sampleHit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
-            //RaycastHit2D sampleHit = Physics2D.Raycast(transform.position + new Vector3(0, transform.localScale.y/4, 0), cursorDirection, GRABDISTANCE, LayerMask.GetMask("Dirt"));
-            //if (sampleHit)
-            //{
-            //    if (sampleHit.collider.gameObject.tag == "Rock" || sampleHit.collider.gameObject.tag == "Dirt")
-            //    {
-            //        setNewHighlightedBlock(sampleHit.collider.gameObject);
-            //    }
-            //}
-            //else
-            //{
-            //    unsetHighlightedBlock();
-            //}
         }
         else
         {
@@ -115,7 +139,7 @@ public class PlayerManager : MonoBehaviour {
             }
         }
 
-        if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Dirt")).collider != null) {
+        if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Block")).collider != null) {
             Camera.main.transform.Translate(0f, ((transform.position.y + CAMERA_OFFCENTER) - Camera.main.transform.position.y) / 8f, 0f);
         }
 
@@ -125,7 +149,16 @@ public class PlayerManager : MonoBehaviour {
                 message.GetComponent<Text>().text = "You Win!!";
             }
         }
-	}
+
+        if(highlightedBlock != null)
+        {
+            Vector2 distVector = new Vector2(Mathf.Abs(highlightedBlock.transform.position.x - transform.position.x), Mathf.Abs(highlightedBlock.transform.position.y - (transform.position.y + transform.localScale.y / 2f)));
+            if (distVector.magnitude > 2f)
+            {
+                unsetHighlightedBlock();
+            }
+        }      
+    }
 
     void setNewHighlightedBlock(GameObject newBlock)
     {
@@ -137,7 +170,7 @@ public class PlayerManager : MonoBehaviour {
         highlightedBlock.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
     }
 
-    void unsetHighlightedBlock()
+    public void unsetHighlightedBlock()
     {
         if(highlightedBlock != null)
         {
@@ -154,7 +187,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void tryToHighlight(GameObject block)
     {
-        Vector2 distVector = new Vector2(Mathf.Abs(block.transform.position.x - transform.position.x), Mathf.Abs(block.transform.position.y - transform.position.y));
+        Vector2 distVector = new Vector2(Mathf.Abs(block.transform.position.x - transform.position.x), Mathf.Abs(block.transform.position.y - (transform.position.y + transform.localScale.y/2f)));
         if(distVector.magnitude < 2f && held == null)
         {
             setNewHighlightedBlock(block);

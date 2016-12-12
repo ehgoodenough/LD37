@@ -22,4 +22,9 @@ public class RockBlockScript : MonoBehaviour {
     {
         playerScript.tryToHighlight(this.gameObject);
     }
+
+    private void OnMouseExit()
+    {
+        playerScript.unsetHighlightedBlock();
+    }
 }
