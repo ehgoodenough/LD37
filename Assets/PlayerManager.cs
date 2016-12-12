@@ -8,10 +8,12 @@ public class PlayerManager : MonoBehaviour {
     private Rigidbody2D body;
     private Vector2 cursorDirection;
     private GameObject highlightedBlock;
+    public GameObject BlockCursorPrefab;
+    private GameObject blockCursor;
 
     public float jumpSpeed = 20f;
     public float moveSpeed = 10f;
-    public float throwSpeed = 15f;
+    public float throwSpeed = 20f;
 
     private const float NEGLIBILE_DISTANCE = 0.01f;
     private const float CAMERA_OFFCENTER = 3f;
@@ -22,6 +24,8 @@ public class PlayerManager : MonoBehaviour {
     void Start() {
         body = GetComponent<Rigidbody2D>();
         cursorDirection = Vector2.down;
+        blockCursor = GameObject.Instantiate(BlockCursorPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        blockCursor.SetActive(false);
     }
 
 	void Update() {
@@ -50,18 +54,26 @@ public class PlayerManager : MonoBehaviour {
 
         if(held == null)
         {
-            RaycastHit2D sampleHit = Physics2D.Raycast(transform.position + new Vector3(0, transform.localScale.y/2, 0), cursorDirection, GRABDISTANCE, LayerMask.GetMask("Dirt"));
-            if (sampleHit)
-            {
-                if (sampleHit.collider.gameObject.tag == "Rock" || sampleHit.collider.gameObject.tag == "Dirt")
-                {
-                    setNewHighlightedBlock(sampleHit.collider.gameObject);
-                }
-            }
-            else
-            {
-                unsetHighlightedBlock();
-            }
+            //Physics2D.Raycast sampleHit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+            //RaycastHit2D sampleHit = Physics2D.Raycast(transform.position + new Vector3(0, transform.localScale.y/4, 0), cursorDirection, GRABDISTANCE, LayerMask.GetMask("Dirt"));
+            //if (sampleHit)
+            //{
+            //    if (sampleHit.collider.gameObject.tag == "Rock" || sampleHit.collider.gameObject.tag == "Dirt")
+            //    {
+            //        setNewHighlightedBlock(sampleHit.collider.gameObject);
+            //    }
+            //}
+            //else
+            //{
+            //    unsetHighlightedBlock();
+            //}
+        }
+        else
+        {
+            held.transform.Translate(new Vector3(cursorDirection.normalized.x*2f, cursorDirection.normalized.y*2f, 0) + (transform.position - held.transform.position + new Vector3(0, transform.localScale.y, 0)));
+            Vector3 cursorTargetPos = new Vector3(Mathf.Round(held.transform.position.x), (Mathf.Round(held.transform.position.y)), 0.00001f);
+            blockCursor.transform.position += (cursorTargetPos - blockCursor.transform.position) / 2;
         }
 
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) {
@@ -77,6 +89,8 @@ public class PlayerManager : MonoBehaviour {
                     highlightedBlock.transform.rotation = Quaternion.identity;
 
                     held = highlightedBlock;
+                    blockCursor.SetActive(true);
+                    held.GetComponent<SpriteRenderer>().enabled = false;                   
                     //unsetHighlightedBlock();
                 }
             } else {
@@ -84,24 +98,20 @@ public class PlayerManager : MonoBehaviour {
                 held.GetComponent<Rigidbody2D>().isKinematic = (held.tag == "Rock");
 
                 held.transform.parent = null;
+                held.GetComponent<SpriteRenderer>().enabled = true;                
 
-                if(held.tag == "Rock") {
+                if (held.tag == "Rock") {
                     // transform.Translate(new Vector2(0f, 0.5f));
                     // held.transform.localPosition = new Vector2(0f, 0f);
 
-                    held.transform.position = new Vector3((Mathf.Round(held.transform.position.x)), (Mathf.Round(held.transform.position.y)), 0f);
+                    held.transform.position = new Vector3((blockCursor.transform.position.x), (Mathf.Round(blockCursor.transform.position.y)), 0f);
                 } else {
-                    if((Input.GetKey("a") || Input.GetKey("left"))) {
-                        held.GetComponent<Rigidbody2D>().velocity = new Vector2(-throwSpeed, 5f);
-                    } else if((Input.GetKey("d") || Input.GetKey("right"))) {
-                        held.GetComponent<Rigidbody2D>().velocity = new Vector2(+throwSpeed, 5f);
-                    } else {
-                        held.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, throwSpeed);
-                    }
+                    held.GetComponent<Rigidbody2D>().AddForce(new Vector2(cursorDirection.x, cursorDirection.y)*throwSpeed);
                 }
 
 
                 held = null;
+                blockCursor.SetActive(false);
             }
         }
 
@@ -124,7 +134,7 @@ public class PlayerManager : MonoBehaviour {
             unsetHighlightedBlock();
         }
         highlightedBlock = newBlock;
-        highlightedBlock.GetComponent<SpriteRenderer>().color = new Color(.4f, .6f, .4f, 1);
+        highlightedBlock.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f, .7f, 1f);
     }
 
     void unsetHighlightedBlock()
@@ -139,6 +149,15 @@ public class PlayerManager : MonoBehaviour {
                 highlightedBlock.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
             }
             highlightedBlock = null;
+        }
+    }
+
+    public void tryToHighlight(GameObject block)
+    {
+        Vector2 distVector = new Vector2(Mathf.Abs(block.transform.position.x - transform.position.x), Mathf.Abs(block.transform.position.y - transform.position.y));
+        if(distVector.magnitude < 2f && held == null)
+        {
+            setNewHighlightedBlock(block);
         }
     }
 }
