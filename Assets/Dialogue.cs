@@ -6,6 +6,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Text))]
 public class Dialogue : MonoBehaviour
 {
+    private const float TRIGGER_DISTANCE = 5;
 
     private Text _textComponent;
 
@@ -14,7 +15,7 @@ public class Dialogue : MonoBehaviour
     public float TimeBetweenCharacters = 0.05f;
     public float CharacterRate = 0.5f;
 
-    public KeyCode DialogueInput = KeyCode.Return;
+    public KeyCode DialogueInput = KeyCode.Space;
 
     private bool _isStringBeingRevealed = false;
     private bool _isDialoguePlaying = false;
@@ -33,8 +34,11 @@ public class Dialogue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.Return))
+        GameObject player = GameObject.Find("Player");
+        GameObject jailbird = GameObject.Find("Jailbird");
+        if(Mathf.Abs(player.transform.position.x - jailbird.transform.position.x) < TRIGGER_DISTANCE
+        && Mathf.Abs(player.transform.position.y - jailbird.transform.position.y) < TRIGGER_DISTANCE
+        && Input.GetKeyDown(DialogueInput))
         {
             if (!_isDialoguePlaying)
             {
@@ -155,4 +159,3 @@ public class Dialogue : MonoBehaviour
     }
 
 }
-
