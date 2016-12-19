@@ -75,13 +75,13 @@ public class PlayerManager : MonoBehaviour {
         Vector2 targetVelocity = body.velocity;
         targetVelocity.x = Input.GetAxisRaw("Horizontal") * moveSpeed;
 
-        body.velocity += ((targetVelocity - body.velocity) / 4) * delta;
+        body.velocity += ((targetVelocity - body.velocity) / 4f) * delta;
 
         // If player has hit the jump key...
         if(Input.GetKey("w") || Input.GetKey("up")) {
             // ...And if the player is standing on the ground...
-            if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.25f, LayerMask.GetMask("Block")).collider != null) {
-                if(body.velocity.y <= 0) {
+            if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.26f, LayerMask.GetMask("Block")).collider != null) {
+                if(body.velocity.y < 1.0) {
                     // ...Then jump!
                     body.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
                 }
