@@ -81,7 +81,7 @@ public class PlayerManager : MonoBehaviour {
         if(Input.GetKeyDown("w") || Input.GetKeyDown("up")) {
             // ...And if the player is standing on the ground...
             if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.26f, LayerMask.GetMask("Block")).collider != null) {
-                if(body.velocity.y < 1.0) {
+                if(body.velocity.y < 4.0) {
                     // ...Then jump!
                     body.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
                 }
