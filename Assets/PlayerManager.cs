@@ -78,7 +78,7 @@ public class PlayerManager : MonoBehaviour {
         body.velocity += ((targetVelocity - body.velocity) / 4f) * delta;
 
         // If player has hit the jump key...
-        if(Input.GetKey("w") || Input.GetKey("up")) {
+        if(Input.GetKeyDown("w") || Input.GetKeyDown("up")) {
             // ...And if the player is standing on the ground...
             if(Physics2D.CircleCast(transform.position, 0.25f, Vector2.down, 0.26f, LayerMask.GetMask("Block")).collider != null) {
                 if(body.velocity.y < 1.0) {
@@ -118,7 +118,7 @@ public class PlayerManager : MonoBehaviour {
                     blockCursor.SetActive(true);
                     blockCursor.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
                     blockCursor.transform.position = highlightedBlock.transform.position;
-                    held.GetComponent<SpriteRenderer>().enabled = false;                   
+                    held.GetComponent<SpriteRenderer>().enabled = false;
                     unsetHighlightedBlock();
                 }
             } else {
@@ -126,7 +126,7 @@ public class PlayerManager : MonoBehaviour {
                 held.GetComponent<Rigidbody2D>().isKinematic = (held.tag == "Rock");
 
                 held.transform.parent = null;
-                held.GetComponent<SpriteRenderer>().enabled = true;                
+                held.GetComponent<SpriteRenderer>().enabled = true;
 
                 if (held.tag == "Rock") {
                     // transform.Translate(new Vector2(0f, 0.5f));
@@ -162,7 +162,7 @@ public class PlayerManager : MonoBehaviour {
             {
                 unsetHighlightedBlock();
             }
-        }      
+        }
     }
 
     void setNewHighlightedBlock(GameObject newBlock)
